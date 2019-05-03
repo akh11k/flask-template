@@ -1,0 +1,5 @@
+**.pyc
+**/__pycache__
+*env/
+*.tox/
+*flask_template.egg-info/

@@ -1,0 +1,72 @@
+version: 1
+
+disable_existing_loggers: True
+
+formatters:
+
+  generic:
+    format: "%(asctime)s - %(name)s - %(levelname)-7s - %(message)s"
+    datefmt: "%Y/%m/%d %H:%M:%S"
+
+
+handlers:
+
+  debug_file: &default
+    class: logging.handlers.RotatingFileHandler
+    level: DEBUG
+    formatter: generic
+    filename: /app/logs/flask-template.txt
+    maxBytes: 10485760
+    backupCount: 10
+    encoding: utf8
+
+
+  request_log_handler:
+    <<: *default
+    filename: /app/logs/access.log
+    formatter: generic
+    level: INFO
+
+  error_log_handler:
+    <<: *default
+    filename: /app/logs/log.txt
+    formatter: generic
+    level: WARNING
+
+  connexion_file_handler:
+    <<: *default
+    filename: /app/logs/connexion.txt
+    formatter: generic
+    level: INFO
+
+
+loggers:
+  connexion:
+    level: INFO
+    propagate: true
+    handlers:
+      - connexion_file_handler
+
+  connexion.decorators.validation:
+    level: INFO
+    propagate: false
+    handlers:
+      - connexion_file_handler
+
+  request:
+    level: INFO
+    propagate: false
+    handlers:
+      - request_log_handler
+
+  gunicorn:
+    level: INFO
+    propagate: false
+    handlers:
+      - error_log_handler
+
+
+root:
+  level: INFO
+  handlers:
+    - debug_file

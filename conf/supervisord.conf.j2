@@ -1,0 +1,28 @@
+[program:gunicorn]
+directory=/app/src/
+command=
+    gunicorn
+    --{% if DEV_ENV|default('False') == 'True' %}reload{% else %}preload{% endif %}
+    --worker-class gevent
+    --workers {% if DEV_ENV|default('False') == 'True' %}2{% else %}4{% endif %}
+    -b :8080
+    wsgi:app
+autostart=true
+autorestart=true
+stderr_logfile=/app/logs/gunicorn-err.log
+
+[program:rq-worker-default]
+directory=/app/src/
+command=
+    rq worker default
+    --results-ttl 604800
+    --url {% if DEV_ENV|default('False') == 'True' %}redis://redis:6379/0{% else %}{{REDIS_URI}}{% endif %}
+numprocs={% if DEV_ENV|default('False') == 'True' %}4{% else %}8{% endif %}
+autostart=true
+autorestart=true
+stdout_logfile=/app/logs/rq-out.log
+stderr_logfile=/app/logs/rq-err.log
+process_name = %(program_name)s_%(process_num)02d
+
+[supervisord]
+logfile=/app/logs/suppervisord.log

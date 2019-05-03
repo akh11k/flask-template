@@ -1,0 +1,28 @@
+openapi: 3.0.0
+
+servers:
+  - description: Development
+    url: http://0.0.0.0:8080
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/akh11k/flask-template/1.0.0
+
+info:
+  version: 1.0.0
+  title: A flask template
+  contact:
+    name: akh11k
+    url: https://github.com/akh11k/
+    email: akh11k@protonmail.com
+
+paths:
+  /isActive:
+    get:
+      summary: Application health check
+      operationId: service.is_active
+      responses:
+        200:
+          description: Active
+          content:
+            text/plain:
+              schema:
+                type: boolean
