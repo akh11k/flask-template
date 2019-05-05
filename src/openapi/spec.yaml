@@ -26,3 +26,46 @@ paths:
             text/plain:
               schema:
                 type: boolean
+
+  /wait/job:
+    get:
+      summary: Test progress job
+      operationId: service.wait
+      parameters:
+        - in: query
+          name: t
+          schema:
+            type: integer
+          required: true
+      responses:
+        200:
+          description: The job_id
+          content:
+            application/json:
+              schema:
+                type: string
+
+  /tasks/{task_id}:
+    get:
+      summary: Get the rq task
+      operationId: utils.rq.get_task
+      parameters:
+        - in: path
+          name: task_id
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: The task
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  result:
+                    type: object
+                  progress:
+                    type: object
