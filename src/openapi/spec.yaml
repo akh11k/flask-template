@@ -14,11 +14,39 @@ info:
     url: https://github.com/akh11k/
     email: akh11k@protonmail.com
 
+tags:
+  - name: RQ
+    description: RQ operations
+
+components:
+  responses:
+    ResourceNotFound:
+      description: Requested resource is not found on the server
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              details:
+                type: string
+
+  schemas:
+    TaskInfo:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [queued, started, finished, failed]
+        result:
+          type: object
+        progress:
+          type: object
+
 paths:
   /isActive:
     get:
       summary: Application health check
-      operationId: service.is_active
+      operationId: routes.health.is_active
       responses:
         200:
           description: Active
@@ -30,7 +58,7 @@ paths:
   /wait/job:
     get:
       summary: Test progress job
-      operationId: service.wait
+      operationId: routes.health.wait
       parameters:
         - in: query
           name: t
@@ -43,12 +71,18 @@ paths:
           content:
             application/json:
               schema:
-                type: string
+                type: object
+                properties:
+                  job_id:
+                    type: string
+                    example: qlejsfkoe395jfh-13kjiemdjanj-3jmni09njnnk-dsfadmkj
 
   /tasks/{task_id}:
     get:
+      tags:
+        - RQ
       summary: Get the rq task
-      operationId: utils.rq.get_task
+      operationId: utils.rq.get_task_info
       parameters:
         - in: path
           name: task_id
@@ -61,11 +95,6 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                  result:
-                    type: object
-                  progress:
-                    type: object
+                $ref: '#/components/schemas/TaskInfo'
+        404:
+          $ref: '#/components/responses/ResourceNotFound'

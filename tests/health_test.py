@@ -1,5 +1,5 @@
-import service
+from service import health
 
 
 def test_is_active():
-    assert service.is_active() is True
+    assert health.is_active() is True

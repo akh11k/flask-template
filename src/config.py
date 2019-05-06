@@ -38,6 +38,13 @@ class Prod(Base):
     REDIS_URL = REDIS_URI
 
 
+class Testing(Base):
+    """Testing config."""
+
+    TESTING = True
+    SECRET_KEY = 'testing'
+
+
 def request_logger(response):
     """Log after every request."""
     import logging

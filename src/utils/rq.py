@@ -1,3 +1,4 @@
+"""RQ utils."""
 import logging
 from enum import Enum
 
@@ -9,6 +10,8 @@ logger = logging.getLogger(__name__)
 
 
 class Queue(Enum):
+    """Available rq queues."""
+
     default = current_app.default_task_queue
 
 
@@ -33,7 +36,7 @@ def set_task_progress(progress):
         job.save_meta()
 
 
-def get_task(task_id):
+def get_task_info(task_id):
     """Get the task info with the give ID."""
     job = rq.job.Job.fetch(task_id, current_app.redis)
     if job is None:
